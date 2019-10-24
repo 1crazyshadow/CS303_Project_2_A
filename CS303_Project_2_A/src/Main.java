@@ -171,8 +171,6 @@ public class Main {
         }
     }
 
-    // TODO : Change size method? For deleteFolder, addFile, and deleteFile
-
     /**
      * Changes the size of all folders in the given path
      * @param startingPath folder to start with
