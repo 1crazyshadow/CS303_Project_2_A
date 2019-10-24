@@ -23,7 +23,9 @@ public class Main {
             addFolder( "C:\\home\\school", "documents" );
             addFolder( "C:\\home\\school", "cs303" );
             addFile( "C:\\home\\school", "umkcPhoto", 8 );
-            addFile( "C:\\home\\school\\documents", "resume", 7 );
+            addFile( "C:\\home\\school\\documents", "resumeA", 7 );
+            addFile( "C:\\home\\school\\documents", "resumeB", 6 );
+            addFile( "C:\\home\\school\\documents", "resumeC", 9 );
             addFile( "C:\\home\\school\\cs303", "project 2", 35 );
             deleteFolder( "C:\\home\\school", "cs303" );
             List<File> files = getFiles( "C:", "resume" );
@@ -37,32 +39,33 @@ public class Main {
 
     /**
      * Adds a folder to the directories
-     * @param path path the folder will have
-     * @param folderName
+     * @param path path the folder will have, do not include folder being added
+     * @param folderName name of folder being added
      * @throws Exception when the path to the folder does not exist
      */
     private static void addFolder( String path, String folderName ) throws Exception {
-        if ( directories.containsKey( path ) || path.equals( "" ) ) {
+        if ( directories.containsKey( path ) || path.equals( "" ) ) { // Checks if directory containing path exists or if starting new parent
+            // Initializing new folder
             Folder folder = new Folder();
             folder.setName( folderName );
             folder.setSize( 0 );
             String fullPath;
-            if ( !path.equals( "" ) ) {
+            if ( !path.equals( "" ) ) { //
                 fullPath = path + "\\" + folderName;
             }
-            else {
+            else { // For if folder is new parent folder
                 fullPath = folderName;
             }
             directories.put( fullPath, folder );
         }
         else {
-            throw new Exception( "Path does not exist" );
+            throw new Exception( "Path does not exist: " + path );
         }
     }
 
     /**
      * Deletes the given folder in the given path
-     * @param path the path to the given folder (does not include folder being deleted)
+     * @param path the path to the given folder, does not include folder being deleted
      * @param folderName the name of the folder in the path to delete
      * @throws Exception when the folder does not exist on the given path
      */
@@ -72,7 +75,7 @@ public class Main {
             ArrayList<String> keys = new ArrayList<>(); // Will contains keys of child folders and files to remove
             Iterator<String> keyIterator = directories.keySet().iterator();
 
-            // Finds the keys of files and folders to delete
+            // Finds the keys of files and folders to delete, the children of deleted folder
             for( int i = 0; i < directories.keySet().size(); i++ ) {
                 String key = keyIterator.next();
                 if ( key.contains( fullPath ) ) {
@@ -84,19 +87,19 @@ public class Main {
             Folder folder = (Folder) directories.get( fullPath );
             changeSize( path, -folder.getSize() );
 
-            // Removes all child folders and files
+            // Deletes folder and all child folders and files
             for ( String key: keys ) {
                 directories.remove( key );
             }
         }
         else {
-            throw new Exception( "Path does not exist" );
+            throw new Exception( "Path does not exist: " + path );
         }
     }
 
     /**
      * Adds a file to the given directory
-     * @param path the path to where the file will be added
+     * @param path the path to where the file will be added, does not include file being added
      * @param fileName the name of the file to add
      * @param size the size of the file being added
      * @throws Exception when the path does not exist in the tree
@@ -114,7 +117,7 @@ public class Main {
             changeSize( path, size );
         }
         else {
-            throw new Exception( "Path does not exist" );
+            throw new Exception( "Path does not exist: " + path );
         }
     }
 
@@ -127,13 +130,15 @@ public class Main {
      */
     private static List<File> getFiles( String path, String fileName ) throws Exception {
         if ( directories.containsKey( path ) ) {
-            ArrayList<String> keys = new ArrayList<>();
-            ArrayList<File> files = new ArrayList<>();
+            ArrayList<String> keys = new ArrayList<>(); // List of keys for the files to return
+            ArrayList<File> files = new ArrayList<>(); // List of files to return
             Iterator<String> keyIterator = directories.keySet().iterator();
 
             for( int i = 0; i < directories.keySet().size(); i++ ) {
                 String key = keyIterator.next();
-                if ( key.contains( path ) && directories.get( key ).getClass() == File.class && directories.get( key ).getName().contains( fileName ) ) {
+                // If key contains given path, value for key is of type File, and the name of the file contains fileName
+                if ( key.contains( path ) && directories.get( key ).getClass() == File.class &&
+                        directories.get( key ).getName().contains( fileName ) ) {
                     keys.add( key );
                 }
             }
@@ -145,13 +150,13 @@ public class Main {
             return files;
         }
         else {
-            throw new Exception( "Path does not exist" );
+            throw new Exception( "Path does not exist: " + path );
         }
     }
 
     /**
      * Deletes the given file in the given file path
-     * @param path the path to get to the file
+     * @param path the path to get to the file, do not include file being deleted
      * @param fileName name of the file to delete
      * @throws Exception when the directory for the file does not exist
      */
@@ -159,7 +164,7 @@ public class Main {
         if ( directories.containsKey( path ) ) {
             String fullPath = path + "\\" + fileName;
 
-            // Subtract the file's size from the folder
+            // Subtract the file's size from all parent folders
             File file = (File) directories.get( fullPath );
             changeSize( path, -file.getSize() );
 
@@ -167,7 +172,7 @@ public class Main {
             directories.remove( fullPath );
         }
         else {
-            throw new Exception( "Path does not exist" );
+            throw new Exception( "Path does not exist: " + path );
         }
     }
 
@@ -181,10 +186,12 @@ public class Main {
         int lastOccurrenceIndex;
         String currentPath = startingPath;
         do {
+            // Pull out the folder, change size, then put it back in
             Folder folder = (Folder) directories.get( currentPath );
             folder.setSize( folder.getSize() + size );
             directories.replace( currentPath, folder );
 
+            // Check to see if higher parent folder exists
             lastOccurrenceIndex = currentPath.lastIndexOf( "\\" );
             if (  lastOccurrenceIndex != -1 ) {
                 currentPath = currentPath.substring( 0, lastOccurrenceIndex );
