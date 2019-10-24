@@ -182,7 +182,6 @@ public class Main {
      * @param size size to add or subtract from folders in path, positive int to add, negative int to subtract
      */
     private static void changeSize( String startingPath, int size ) {
-        int firstOccurrenceIndex;
         int lastOccurrenceIndex;
         String currentPath = startingPath;
         do {
