@@ -10,7 +10,7 @@ import java.util.TreeMap;
  * For path, do not include file/folder name
  */
 public class Main {
-    private static TreeMap<String, MyProjectClass> directories = new TreeMap<>();
+    private static TreeMap<String, MyProjectClass> directories = new TreeMap<>(); // TreeMap is a red black tree
 
     public static void main ( String args[] ) {
         try {
