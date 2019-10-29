@@ -44,7 +44,7 @@ public class Main {
      * @throws Exception when the path to the folder does not exist
      */
     private static void addFolder( String path, String folderName ) throws Exception {
-        if ( directories.containsKey( path ) || path.equals( "" ) ) { // Checks if directory containing path exists or if starting new parent
+        if ( ( directories.containsKey( path ) && directories.get( path ).getClass() == Folder.class ) || path.equals( "" ) ) { // Checks if directory containing path exists or if starting new parent
             // Initializing new folder
             Folder folder = new Folder();
             folder.setName( folderName );
@@ -105,7 +105,7 @@ public class Main {
      * @throws Exception when the path does not exist in the tree
      */
     private static void addFile( String path, String fileName, int size ) throws Exception {
-        if ( directories.containsKey( path ) ) {
+        if ( directories.containsKey( path ) && directories.get( path ).getClass() == Folder.class ) {
             // Add File
             File file = new File();
             file.setName( fileName );
@@ -129,7 +129,7 @@ public class Main {
      * @throws Exception when the path does not exist in directories
      */
     private static List<File> getFiles( String path, String fileName ) throws Exception {
-        if ( directories.containsKey( path ) ) {
+        if ( directories.containsKey( path ) && directories.get( path ).getClass() == Folder.class ) {
             ArrayList<String> keys = new ArrayList<>(); // List of keys for the files to return
             ArrayList<File> files = new ArrayList<>(); // List of files to return
             Iterator<String> keyIterator = directories.keySet().iterator();
@@ -161,7 +161,7 @@ public class Main {
      * @throws Exception when the directory for the file does not exist
      */
     private static void deleteFile( String path, String fileName ) throws Exception {
-        if ( directories.containsKey( path ) ) {
+        if ( directories.containsKey( path ) && directories.get( path ).getClass() == Folder.class ) {
             String fullPath = path + "\\" + fileName;
 
             // Subtract the file's size from all parent folders
