@@ -1,2 +1,2 @@
-public class Folder extends MyProjectClass {
+public class Folder extends BaseClass {
 }
